@@ -1,0 +1,33 @@
+version: '3'
+
+
+services:
+  go_auth:
+    image: go_auth
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /auth:/auth/app
+    depends_on:
+      - postgres
+    ports:
+      - 8000:8000
+    networks:
+      - authentication_network
+
+  postgres:
+    image: postgres:13
+    restart: always
+    volumes:
+      - /home/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=go_auth
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - authentication_network
+
+networks:
+  authentication_network:
+    driver: bridge
